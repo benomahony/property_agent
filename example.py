@@ -4,8 +4,12 @@ from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 
-OLLAMA_API_ENDPOINT = os.environ.get("OLLAMA_OPENAI_ENDPOINT", "http://localhost:11434/v1")
-MODEL_NAME = os.environ.get("OLLAMA_MODEL", "qwen2.5-coder") # Ensure this model is pulled in Ollama
+OLLAMA_API_ENDPOINT = os.environ.get(
+    "OLLAMA_OPENAI_ENDPOINT", "http://localhost:11434/v1"
+)
+MODEL_NAME = os.environ.get(
+    "OLLAMA_MODEL", "qwen2.5-coder"
+)  # Ensure this model is pulled in Ollama
 
 ollama_provider = OpenAIProvider(base_url=OLLAMA_API_ENDPOINT, api_key="ollama")
 ollama_model_config = OpenAIModel(model_name=MODEL_NAME, provider=ollama_provider)
@@ -13,8 +17,9 @@ ollama_model_config = OpenAIModel(model_name=MODEL_NAME, provider=ollama_provide
 scenario = {
     "name": "Should know about capital cities",
     "given": "What is the capital of France?",
-    "then": "Paris"
+    "then": "Paris",
 }
+
 
 async def get_llm_response(prompt: str) -> str:
     """Sends a prompt to the configured LLM and returns the text response."""
@@ -30,9 +35,11 @@ async def get_llm_response(prompt: str) -> str:
         print(f"--- Error interacting with LLM: {e} ---")
         return f"Error: {e}"
 
+
 def check_response(response: str, then: str) -> bool:
     """Checks if the response contains the expected substring (case-insensitive)."""
     return then.lower() in response.lower()
+
 
 async def main():
     print("--- Starting Minimal BDD-Inspired Check ---")
@@ -49,6 +56,7 @@ async def main():
     print(f"Expectation: Response should contain '{scenario['then']}'")
     print(f"Result: {'PASS' if is_pass else 'FAIL'}")
     print("--- Check Complete ---")
+
 
 if __name__ == "__main__":
     print(f"Using Ollama via OpenAI-compatible endpoint: {OLLAMA_API_ENDPOINT}")
