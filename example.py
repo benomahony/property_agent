@@ -11,9 +11,9 @@ ollama_provider = OpenAIProvider(base_url=OLLAMA_API_ENDPOINT, api_key="ollama")
 ollama_model_config = OpenAIModel(model_name=MODEL_NAME, provider=ollama_provider)
 
 scenario = {
-    "name": "Check Capital City Knowledge",
-    "prompt": "What is the capital of France?",
-    "expected_substring": "Paris"
+    "name": "Should know about capital cities",
+    "given": "What is the capital of France?",
+    "then": "Paris"
 }
 
 async def get_llm_response(prompt: str) -> str:
@@ -30,23 +30,23 @@ async def get_llm_response(prompt: str) -> str:
         print(f"--- Error interacting with LLM: {e} ---")
         return f"Error: {e}"
 
-def check_response(response: str, expected_substring: str) -> bool:
+def check_response(response: str, then: str) -> bool:
     """Checks if the response contains the expected substring (case-insensitive)."""
-    return expected_substring.lower() in response.lower()
+    return then.lower() in response.lower()
 
 async def main():
     print("--- Starting Minimal BDD-Inspired Check ---")
     print(f"Using Model: {MODEL_NAME} via {OLLAMA_API_ENDPOINT}")
     print(f"Scenario: {scenario['name']}")
 
-    llm_response = await get_llm_response(scenario["prompt"])
+    llm_response = await get_llm_response(scenario["given"])
 
-    is_pass = check_response(llm_response, scenario["expected_substring"])
+    is_pass = check_response(llm_response, scenario["then"])
 
     print("\n--- Test Result ---")
-    print(f"Prompt: '{scenario['prompt']}'")
+    print(f"Given: '{scenario['given']}'")
     print(f"Response: '{llm_response}'")
-    print(f"Expectation: Response should contain '{scenario['expected_substring']}'")
+    print(f"Expectation: Response should contain '{scenario['then']}'")
     print(f"Result: {'PASS' if is_pass else 'FAIL'}")
     print("--- Check Complete ---")
 
